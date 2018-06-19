@@ -69,6 +69,7 @@ class Home extends Component {
               {/* end noi dung */}
             </div>
             {/* footer */}
+            // quan ly
             <Footer/>
         </div>
       </div>
