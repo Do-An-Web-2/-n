@@ -30,7 +30,8 @@ class pageDetail extends Component {
       tempThanhcong: 0,
       tempHetgio: 0,
       ketqua: 0,
-      nguoidung:0,
+      nguoidung: 0,
+      user_id: 0,
     };
     this.Daugia = this.Daugia.bind(this);
   }
@@ -188,139 +189,132 @@ class pageDetail extends Component {
     dots[index].className += " active";
   }
   Daugia() {
+    alert("ok");
     // Check user có trong phếu đấu chưa nếu rồi trà về 1 chưa trả về 0
-    axios.get('/Detail/checkUserInPhien/phien=' + this.state.ms_phien + '/id=' + this.state.taikhoan)
-      .then((res) => {
-        if (res.data === 0) {
-          // Insert 1 phiếu đấu
-          var body = {
-            giadau: this.refs.giadau.value,
-            taikhoan: this.state.taikhoan,
-            ms_phien: this.state.ms_phien,
-            status: 0
-          }
-          axios({
-            method: 'post',
-            url: "/Detail/Daugiangay",
-            data: stringify(body),
-          })
-            .then((res) => {
-              // Sau khi đấu giá cần phải update lại giá hiện tại và mã phiếu thắng trong phien_daugia
-              var body_updatePhien = {
-                phien: res.data.phieudau[0].ms_phien,
-                phieu: res.data.phieudau[0].ms_phieu,
-                giadau: res.data.phieudau[0].giadau,
-              }
-              axios({
-                method: 'put',
-                url: "/Detail/Daugiangay",
-                data: stringify(body_updatePhien),
-              })
-            })
-          this.setState({ tempThanhcong: 1 });
-        }
-        if (res.data === 1) {
-          // Update phieu đấu
-          var date=new Date();
-          var body = {
-            giadau: this.refs.giadau.value,
-            taikhoan: this.state.taikhoan,
-            ms_phien: this.state.ms_phien,
-            status: 1
-          }
-          axios({
-            method: 'post',
-            url: "/Detail/Daugiangay",
-            data: stringify(body),
-          })
-            .then((res) => {
-              var body_updatePhien = {
-                phien: res.data.phieudau[0].ms_phien,
-                phieu: res.data.phieudau[0].ms_phieu,
-                giadau: res.data.phieudau[0].giadau,
-              }
-              axios({
-                method: 'put',
-                url: "/Detail/Daugiangay",
-                data: stringify(body_updatePhien),
-              })
-            })
-          this.setState({ tempThanhcong: 1 });
-        }
-        if (res.data === -1) {
-          this.setState({ tempDathang: 1 })
-        }
-        if (res.data === 2) {
-          this.setState({ tempHetgio: 1 })
-        }
-      })
-      .catch(err => console.log("Error"));
+    // axios.get('/Detail/checkUserInPhien/phien=' + this.state.ms_phien + '/id=' + this.state.taikhoan)
+    //   .then((res) => {
+    //     if (res.data === 0) {
+    //       // Insert 1 phiếu đấu
+    //       var body = {
+    //         giadau: this.refs.giadau.value,
+    //         taikhoan: this.state.taikhoan,
+    //         ms_phien: this.state.ms_phien,
+    //         status: 0
+    //       }
+    //       axios({
+    //         method: 'post',
+    //         url: "/Detail/Daugiangay",
+    //         data: stringify(body),
+    //       })
+    //         .then((res) => {
+    //           // Sau khi đấu giá cần phải update lại giá hiện tại và mã phiếu thắng trong phien_daugia
+    //           var body_updatePhien = {
+    //             phien: res.data.phieudau[0].ms_phien,
+    //             phieu: res.data.phieudau[0].ms_phieu,
+    //             giadau: res.data.phieudau[0].giadau,
+    //           }
+    //           axios({
+    //             method: 'put',
+    //             url: "/Detail/Daugiangay",
+    //             data: stringify(body_updatePhien),
+    //           })
+    //         })
+    //       this.setState({ tempThanhcong: 1 });
+    //     }
+    //     if (res.data === 1) {
+    //       // Update phieu đấu
+    //       var date=new Date();
+    //       var body = {
+    //         giadau: this.refs.giadau.value,
+    //         taikhoan: this.state.taikhoan,
+    //         ms_phien: this.state.ms_phien,
+    //         status: 1
+    //       }
+    //       axios({
+    //         method: 'post',
+    //         url: "/Detail/Daugiangay",
+    //         data: stringify(body),
+    //       })
+    //         .then((res) => {
+    //           var body_updatePhien = {
+    //             phien: res.data.phieudau[0].ms_phien,
+    //             phieu: res.data.phieudau[0].ms_phieu,
+    //             giadau: res.data.phieudau[0].giadau,
+    //           }
+    //           axios({
+    //             method: 'put',
+    //             url: "/Detail/Daugiangay",
+    //             data: stringify(body_updatePhien),
+    //           })
+    //         })
+    //       this.setState({ tempThanhcong: 1 });
+    //     }
+    //     if (res.data === -1) {
+    //       this.setState({ tempDathang: 1 })
+    //     }
+    //     if (res.data === 2) {
+    //       this.setState({ tempHetgio: 1 })
+    //     }
+    //   })
+    //   .catch(err => console.log("Error"));
   }
   tick() {
     this.setState(prevState => ({
       seconds: prevState.seconds + 1
     }));
-    axios.get('/users/login')
+    axios.get('/serverDetail/phien=' + this.props.match.params.phien + '/id=' + this.props.match.params.id)
       .then(res => {
-        if (!res.data.id) {
-          window.location.href = "/login";
+        this.setState({
+          arraySanpham: res.data.sanpham,
+          producter: res.data.loaisp, arrayHinh: res.data.hinh,
+          imageIndex: res.data.sanpham[0].hinhanh,
+          tempTen: res.data.sanpham,
+          ms_phien: res.data.sanpham[0].ms_phien,
+          taikhoan: res.data.taikhoan_id,
+          giadau_hientai: res.data.sanpham[0].gia_hientai,
+          ketqua: res.data.ketqua,
+          user_id: res.data.user_id,
+          ten_hienthi: res.data.taikhoan
+        })
+        if (res.data.userWin[0]) {
+          this.setState({
+            userWin: res.data.userWin[0].ten_hienthi
+          })
         }
-        if (res.data.id) {
-          this.setState({ ten_hienthi: res.data.ten_hienthi,nguoidung:res.data.nguoidung });
-          axios.get('/serverDetail/phien=' + this.props.match.params.phien + '/id=' + this.props.match.params.id)
-            .then(res => {
-              this.setState({
-                arraySanpham: res.data.sanpham,
-                producter: res.data.loaisp, arrayHinh: res.data.hinh,
-                imageIndex: res.data.sanpham[0].hinhanh,
-                tempTen: res.data.sanpham,
-                ms_phien: res.data.sanpham[0].ms_phien,
-                taikhoan: res.data.taikhoan_id,
-                giadau_hientai: res.data.sanpham[0].gia_hientai,
-                ketqua: res.data.ketqua
-              })
-              if (res.data.userWin[0]) {
-                this.setState({
-                  userWin: res.data.userWin[0].ten_hienthi
-                })
-              }
-              if (!res.data.userWin[0]) {
-                this.setState({
-                  userWin: ""
-                })
-              }
-              // Gán giá trị nếu đầu zô mà input giá đấu không có 
-              if (!this.refs.giadau.value) {
-                if (res.data.giadau[0].max === null) {
-                  this.setState({ giadau_min: 1 });
-                  this.refs.giadau.value = 1;
-                }
-                if (res.data.giadau[0].max !== null) {
-                  this.setState({ giadau_min: res.data.giadau[0].max + 1 });
-                  this.refs.giadau.value = res.data.giadau[0].max + 1;
-                }
-              }
-              // K gán khi giá trị tồn tại
-              if (this.refs.giadau.value) {
-                // Nếu giá trị thẻ input giá đấu mà nhỏ hơn hoặc bằng thì mới gán .Trường hợp còn lại thì cho người dùng nhập
-                if (this.refs.giadau.value <= res.data.giadau[0].max) {
-                  // Nếu phiếu đấu chưa tổn tại
-                  if (res.data.giadau[0].max === null) {
-                    this.setState({ giadau_min: 1 });
-                    this.refs.giadau.value = 1;
-                  }
-                  //Nếu phiếu đâu tồn tại
-                  if (res.data.giadau[0].max != null) {
-                    this.setState({ giadau_min: res.data.giadau[0].max + 1 });
-                    this.refs.giadau.value = res.data.giadau[0].max + 1;
-                  }
-                }
-              }
-              this.setState({ tensp: this.state.tempTen[0].ten_sp });
-            })
+        if (!res.data.userWin[0]) {
+          this.setState({
+            userWin: ""
+          })
         }
+        // Gán giá trị nếu đầu zô mà input giá đấu không có 
+        if (!this.refs.giadau.value) {
+          if (res.data.giadau[0].max === null) {
+            this.setState({ giadau_min: 1 });
+            this.refs.giadau.value = 1;
+          }
+          if (res.data.giadau[0].max !== null) {
+            this.setState({ giadau_min: res.data.giadau[0].max + 1 });
+            this.refs.giadau.value = res.data.giadau[0].max + 1;
+          }
+        }
+        // K gán khi giá trị tồn tại
+        if (this.refs.giadau.value) {
+          // Nếu giá trị thẻ input giá đấu mà nhỏ hơn hoặc bằng thì mới gán .Trường hợp còn lại thì cho người dùng nhập
+          if (this.refs.giadau.value <= res.data.giadau[0].max) {
+            // Nếu phiếu đấu chưa tổn tại
+            if (res.data.giadau[0].max === null) {
+              this.setState({ giadau_min: 1 });
+              this.refs.giadau.value = 1;
+            }
+            //Nếu phiếu đâu tồn tại
+            if (res.data.giadau[0].max != null) {
+              this.setState({ giadau_min: res.data.giadau[0].max + 1 });
+              this.refs.giadau.value = res.data.giadau[0].max + 1;
+            }
+          }
+        }
+        this.setState({ tensp: this.state.tempTen[0].ten_sp });
       })
-      .catch(err => console.log("Error"));
   }
   autoThongbao() {
     if (this.state.tempDathang === 1) {
@@ -335,12 +329,55 @@ class pageDetail extends Component {
   }
   componentDidMount() {
     setInterval(() => this.autoThongbao(), 1000 * 5)
-    this.interval = setInterval(() => this.tick(), 1000);
+    this.interval = setInterval(() => this.tick(), 100);
     this.scriptHieuUngBtn();
     this.scriptTangGiam();
   }
   render() {
-    let Message, MessageEnd;
+    let Message, MessageEnd, Daugiangay;
+    if (this.state.user_id !== 0) {
+      Daugiangay = (
+        <div><button className="btn_daugia" onClick={this.Daugia}>Đấu giá ngay</button></div>
+      )
+    }
+    if (this.state.user_id === 0) {
+      Daugiangay = (
+        <div>
+          <button data-toggle="modal" data-target="#btnDaugia" className="btn_daugia"><span className="glyphicon glyphicon-user" />Đấu giá ngay</button>
+          <div className="modal fade" id="btnDaugia" role="dialog">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <button type="button" className="close" data-dismiss="modal">×</button>
+                  <h4 className="modal-title"><strong>Login</strong></h4>
+                </div>
+                <div className="modal-body">
+                  <img alt="ds" id="profile-img" className="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+                  <form className="form-signin">
+                    <span id="reauth-email" className="reauth-email" />
+                    <input type="text" id="username" className="form-control input_nhap" placeholder="Email address" ref="username" />
+                    <input type="password" id="password" className="form-control input_nhap" placeholder="Password" ref="password" />
+                  </form>
+                  {/* /form */}
+                </div>
+                <div className="modal-footer">
+                  <div className="TK_dangky">
+                    <a className="forgot-password">
+                      Forgot the password?
+                                                    </a>
+                    <a href="/register" className="forgot-password">
+                      Đăng ký
+                                                    </a>
+                  </div>
+                  <button className="btn btn-primary" type="submit" onClick={this.Dangnhap}>Sign in</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     if (this.state.tempDathang === 1) {
       Message = (
         <div className="alert alert-danger daucaonhat">
@@ -393,11 +430,11 @@ class pageDetail extends Component {
       <div >
         <div>
           {/* Header */}
-          <HeaderNotImage ten_hienthi={this.state.ten_hienthi} nguoidung={this.state.nguoidung}/>
+          {/* <HeaderNotImage ten_hienthi={this.state.ten_hienthi} nguoidung={this.state.nguoidung} user_id={this.state.user_id} /> */}
           {/* end Header*/}
-          <div className="row producter_index">
+          {/* <div className="row producter_index"> */}
             {/* producter */}
-            <Producter loaisp={this.state.producter} />
+            {/* <Producter loaisp={this.state.producter} /> */}
             {/* end producter */}
             {/* noi dung */}
             <div className="col-md-9" id="content">
@@ -436,8 +473,8 @@ class pageDetail extends Component {
                             </span>
                           </div>
                         </div>
-                        <div><button className="btn_daugia" onClick={this.Daugia}>Đấu giá ngay</button></div>
-
+                        {/* Đấu giá ngay */}
+                        {Daugiangay}
                         <div className="nguoithang">Người thắng hiện tại &nbsp;<span className="glyphicon glyphicon-user" />
                         </div>
                         <div className="user_thang">{this.state.userWin}</div>
@@ -466,53 +503,53 @@ class pageDetail extends Component {
                     <div id="hoantra" className="collapse">
                       chính sách hoàn trả trong 14 ngày áp dụng cho tất cả sản phẩm, cho phép bạn an tâm mua các thiết bị điện tử, quần áo, giày dép và hơn thế nữa. Chú ý: Tất cả sản phẩm phải được hoàn trả trong tình trạng ban đầu. Khi đáp ứng được điều kiện hoàn trả, bạn sẽ được hoàn lại đầy đủ số tiền không bao gồm 10% phí dịch vụ. Người mua hàng sẽ chịu trách nhiệm cho phí vận chuyển hàng trả lại.
           </div>
-                    <div id="giaohang" className="collapse">
-                      Bạn sẽ nhận được kiện hàng trong vòng 1-3 ngày làm việc sau khi thanh toán thành công. Với mỗi hoá đơn, không kể số lượng sản phẩm bao gồm trong hoá đơn, bạn chỉ cần thanh toán 1 lần phí vận chuyển và 10% phí dịch vụ để đảm bảo kiện hàng của bạn được gửi nhanh chóng an toàn. Phí dịch vụ không áp dụng cho các sản phẩm khuyến mãi có giá cố định.
+                      <div id="giaohang" className="collapse">
+                        Bạn sẽ nhận được kiện hàng trong vòng 1-3 ngày làm việc sau khi thanh toán thành công. Với mỗi hoá đơn, không kể số lượng sản phẩm bao gồm trong hoá đơn, bạn chỉ cần thanh toán 1 lần phí vận chuyển và 10% phí dịch vụ để đảm bảo kiện hàng của bạn được gửi nhanh chóng an toàn. Phí dịch vụ không áp dụng cho các sản phẩm khuyến mãi có giá cố định.
           </div>
-                    <div id="tien" className="collapse">
-                      Chúng tôi cung cấp phương thức thanh toán thuận tiện và an toàn đối với những thanh toán trực tuyến bằng thẻ Visa hoặc Master
+                      <div id="tien" className="collapse">
+                        Chúng tôi cung cấp phương thức thanh toán thuận tiện và an toàn đối với những thanh toán trực tuyến bằng thẻ Visa hoặc Master
           </div>
-                    <div>
-                      <ul className="nav nav-tabs">
-                        <li className="active">
-                          <a href="#view return condition" data-toggle="collapse" data-target="#chitiet" id="chitiet1">Chi tiết sản phẩm</a>
-                        </li>
-                        <li>
-                          <a href="#view return condition" data-toggle="collapse" data-target="#FAQ" id="FAQ1">FAQ</a>
-                        </li>
-                      </ul>
-                      <br />
-                      {elementsThongtin}
-                      <p id="FAQ" className="collapse">
-                        Khi giá thầu của bạn cao hơn giá thầu tối thiểu, hệ thống sẽ tự động đấu giá cho bạn. Lưu ý chúng tôi sẽ không bao giờ đấu giá cao hơn giá bạn đã đưa ra.
-                        Hệ thống được thiết kế để giữ tiền cho bạn và cung cấp cho bạn cơ hội thắng đấu giá cao nhất với mức giá thấp nhất.
-                        Với phương thức này bạn sẽ quyết định được mức giá tối đa bạn sẵn sàng trả cho sản phẩm và vẫn có cơ hội để thắng với mức giá thấp hơn mức giá tối đa mà bạn đã đưa ra.
-                        Dưới đây là 1 ví dụ:
-                        Một người dùng khác (Tạm gọi là Người Dùng 1) đưa ra giá thầu là 200k VND
-                        Giá thầu của bạn là 300k VND.
-                        Thay vì đấu giá với giá là 300k VND, thuật toán của chúng tôi sẽ điều chỉnh giá thầu của bạn xuống còn 200k VND.
-                        Người Dùng 1 đưa ra giá thầu là 250k VND
-                        Hệ thống của chúng tôi sẽ tự động đấu giá với mức giá bằng 250K VND cho bạn, bởi bạn đã đăng ký giá thầu tối đa mà bạn muốn trả cho sản phẩm là 300K VND.
-                        Bạn vẫn sẽ thắng thầu với mức giá 250k VND.
-                        Người Dùng 1 lại đưa ra giá thầu mới là 300k VND, bằng với giá đầu lúc đầu của bạn. Trong trường hợp này, hệ thống sẽ tự động khớp giá thầu của Người Dùng 1 và bạn vẫn là người thắng thầu với mức giá 300k VND
-                        Chiến lược tốt là đưa ra một giá thầu tối đa cao từ ban đầu, như vậy bạn sẽ có cơ hội thắng thầu cao hơn, đặc biệt khi người dùng khác khớp với giá thầu của bạn
-                        Người Dùng 1 đưa ra giá thầu mới là 310k VND
-                        Bạn đã bị đấu giá cao hơn và Người Dùng 1 đang giữ lợi thế thắng cuộc. Nếu bạn muốn đưa ra giá thầu mới để thắng thầu bạn sẽ cần phải đưa ra giá thầu cao hơn 310k VND
-                        Như vậy bạn có thể thắng, Chilindo được thiết kế để bạn có thể thắng đấu giá với giá tốt nhất.
+                      <div>
+                        <ul className="nav nav-tabs">
+                          <li className="active">
+                            <a href="#view return condition" data-toggle="collapse" data-target="#chitiet" id="chitiet1">Chi tiết sản phẩm</a>
+                          </li>
+                          <li>
+                            <a href="#view return condition" data-toggle="collapse" data-target="#FAQ" id="FAQ1">FAQ</a>
+                          </li>
+                        </ul>
+                        <br />
+                        {elementsThongtin}
+                        <p id="FAQ" className="collapse">
+                          Khi giá thầu của bạn cao hơn giá thầu tối thiểu, hệ thống sẽ tự động đấu giá cho bạn. Lưu ý chúng tôi sẽ không bao giờ đấu giá cao hơn giá bạn đã đưa ra.
+                          Hệ thống được thiết kế để giữ tiền cho bạn và cung cấp cho bạn cơ hội thắng đấu giá cao nhất với mức giá thấp nhất.
+                          Với phương thức này bạn sẽ quyết định được mức giá tối đa bạn sẵn sàng trả cho sản phẩm và vẫn có cơ hội để thắng với mức giá thấp hơn mức giá tối đa mà bạn đã đưa ra.
+                          Dưới đây là 1 ví dụ:
+                          Một người dùng khác (Tạm gọi là Người Dùng 1) đưa ra giá thầu là 200k VND
+                          Giá thầu của bạn là 300k VND.
+                          Thay vì đấu giá với giá là 300k VND, thuật toán của chúng tôi sẽ điều chỉnh giá thầu của bạn xuống còn 200k VND.
+                          Người Dùng 1 đưa ra giá thầu là 250k VND
+                          Hệ thống của chúng tôi sẽ tự động đấu giá với mức giá bằng 250K VND cho bạn, bởi bạn đã đăng ký giá thầu tối đa mà bạn muốn trả cho sản phẩm là 300K VND.
+                          Bạn vẫn sẽ thắng thầu với mức giá 250k VND.
+                          Người Dùng 1 lại đưa ra giá thầu mới là 300k VND, bằng với giá đầu lúc đầu của bạn. Trong trường hợp này, hệ thống sẽ tự động khớp giá thầu của Người Dùng 1 và bạn vẫn là người thắng thầu với mức giá 300k VND
+                          Chiến lược tốt là đưa ra một giá thầu tối đa cao từ ban đầu, như vậy bạn sẽ có cơ hội thắng thầu cao hơn, đặc biệt khi người dùng khác khớp với giá thầu của bạn
+                          Người Dùng 1 đưa ra giá thầu mới là 310k VND
+                          Bạn đã bị đấu giá cao hơn và Người Dùng 1 đang giữ lợi thế thắng cuộc. Nếu bạn muốn đưa ra giá thầu mới để thắng thầu bạn sẽ cần phải đưa ra giá thầu cao hơn 310k VND
+                          Như vậy bạn có thể thắng, Chilindo được thiết kế để bạn có thể thắng đấu giá với giá tốt nhất.
             </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              {/* end noi dung */}
             </div>
-            {/* end noi dung */}
+            {/* footer */}
+            {/* <Footer /> */}
           </div>
-          {/* footer */}
-          <Footer />
-        </div>
-      </div>
-    );
-  }
-}
-
-export default pageDetail;
+        // </div>
+        );
+      }
+    }
+    
+    export default pageDetail;
