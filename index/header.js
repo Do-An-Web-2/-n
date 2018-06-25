@@ -14,10 +14,60 @@ class Header extends Component {
             user_id: 0,
             ten_hienthi: "",
             imageHome: "",
+            address:0,
+            cookie_username:"",
+            cookie_password:"",
         }
+        this.Dangxuat=this.Dangxuat.bind(this);
         this.Dangnhap = this.Dangnhap.bind(this);
         this.Dangky = this.Dangky.bind(this);
         this.Forget = this.Forget.bind(this);
+        this.Link_Dangnhap=this.Link_Dangnhap.bind(this);
+        this.Link_Giohang=this.Link_Giohang.bind(this);
+    }
+    Link_Giohang()
+    { 
+        this.setState({address:1,
+            alert_error: 0,
+            alert_username_register: 0,
+            error_dangky: 0,
+            error_forget: 1,})
+            // refresh
+        $("#login_username").val(this.state.cookie_username);
+        $("#login_pwd").val(this.state.cookie_password);
+        $("#register_username").val("");
+        $("#register_nickname").val("");
+        $("#register_email").val("");
+        $("#register_pwd").val("");
+        $("#forget_username").val("");
+        $("#forget_email").val("");
+    }
+    Link_Dangnhap()
+    {
+        this.setState({address:0,
+            alert_error: 0,
+            alert_username_register: 0,
+            error_dangky: 0,
+            error_forget: 1,});
+        // refresh
+        $("#login_username").val(this.state.cookie_username);
+        $("#login_pwd").val(this.state.cookie_password);
+        $("#register_username").val("");
+        $("#register_nickname").val("");
+        $("#register_email").val("");
+        $("#register_pwd").val("");
+        $("#forget_username").val("");
+        $("#forget_email").val("");
+    }
+    Dangxuat()
+    {
+        axios.get("/users/serverlogout")
+        .then((res)=>{
+            if(res.data===1)
+            {
+                window.location.reload();
+            }
+        })
     }
 
     Forget() {
@@ -25,7 +75,7 @@ class Header extends Component {
             email: $("#forget_email").val(),
             username: $("#forget_username").val()
         }
-        axios.get('users/register/' + body.username) //không phải register mà dùng để kiễm tra username có tồn tại không
+        axios.get('/users/register/' + body.username) //không phải register mà dùng để kiễm tra username có tồn tại không
             .then((res) => {
                 alert(res.data)
                 // tai khoan ton tai
@@ -39,8 +89,11 @@ class Header extends Component {
                             this.setState({ error_forget: res.data })
                             // tai khoan hop le 
                             if (res.data === 1) {
+                                this.setState({alert_error:0});
                                 $('#Forgetpassword_form').attr({ 'class': 'tab-pane fade' });
                                 $('#login-form').attr({ 'class': 'tab-pane fade in active' });
+                                $("#login_username").val(body.username);
+                                $("#login_pwd").val("");
                             }
                         })
                 }
@@ -81,6 +134,7 @@ class Header extends Component {
                                 $('#li_register').removeClass('active');
                                 $('#li_login').addClass('active');
                                 $('#login-form').attr({ 'class': 'tab-pane fade in active' });
+                                this.setState({alert_error:0});
                                 $('#login_username').val(body.username);
                                 $('#login_pwd').val(body.password);
                             }
@@ -104,18 +158,33 @@ class Header extends Component {
                     this.setState({ alert_error: 1 })
                 }
                 if (res.data !== 0) {
-                    window.location.reload();
+                    if(this.state.address===1)
+                    {
+                        window.location.href="/Giohang"
+                    }
+                    else
+                    {
+                        window.location.reload();
+                    }
                 }
             })
     }
     componentWillMount() {
         this.setState({ imageHome: window.location.pathname });
+         
     }
     componentDidMount() {
         axios.get('/serverheader')
             .then((res) => {
-                this.setState({ user_id: res.data.user_id, ten_hienthi: res.data.ten_hienthi, nguoidung: res.data.nguoidung })
-            })
+                this.setState({ user_id: res.data.user_id, 
+                    ten_hienthi: res.data.ten_hienthi, 
+                    nguoidung: res.data.nguoidung,
+                    cookie_username:res.data.username,
+                    cookie_password:res.data.password
+                 })
+                $("#login_username").val(res.data.username);
+                $("#login_pwd").val(res.data.password);
+            })       
     }
 
     render() {
@@ -125,7 +194,8 @@ class Header extends Component {
             elementAlert_username_tontai,
             elementError_dangky,
             elementError_forget,
-            elementImageHome;
+            elementImageHome,
+            elementGiohang;
         if (this.state.imageHome === "/") {
             elementImageHome = (
                 <div id="myCarousel" className="carousel slide" data-ride="carousel" style={{ marginTop: '-20px' }}>
@@ -215,15 +285,18 @@ class Header extends Component {
                     <ul className="dropdown-menu">
                         <li><a href="/Thongtin">Cá nhân</a></li>
                         <li><a href="#">Đơn hàng</a></li>
-                        <li><a href="/logout" onClick={this.Dangxuat}>Đăng xuất</a></li>
+                        <li><a href="#" onClick={this.Dangxuat}>Đăng xuất</a></li>
                     </ul>
                 </li>
+            )
+            elementGiohang=(
+            <a href="/Giohang"><span className="glyphicon glyphicon-shopping-cart" />Giỏ hàng</a>
             )
         }
         if (this.state.user_id == 0) {
             elementDangnhap = (
                 <li>
-                    <a href="#" data-toggle="modal" data-target=".login-register-form">
+                    <a href="#" onClick={this.Link_Dangnhap}  data-toggle="modal" data-target=".login-register-form">
                         <span className="glyphicon glyphicon-user" />Đăng nhập
                     </a>
                     <div className="modal fade login-register-form" role="dialog">
@@ -302,6 +375,9 @@ class Header extends Component {
                     </div>
                 </li>
             )
+            elementGiohang=(
+                <a href="#" onClick={this.Link_Giohang} data-toggle="modal" data-target=".login-register-form"><span className="glyphicon glyphicon-shopping-cart" />Giỏ hàng</a>
+            )
         }
         if (this.state.nguoidung == 1) {
             elementQuanly = (
@@ -321,7 +397,7 @@ class Header extends Component {
                             </a>
                         </div>
                         <ul className="nav navbar-nav">
-                            <li><a href="/Giohang"><span className="glyphicon glyphicon-shopping-cart" />Giỏ hàng</a></li>
+                            <li>{elementGiohang}</li>
                             <li><a href="/Daugiacuatoi"><span className="glyphicon glyphicon-leaf" />Đấu giá</a></li>
                         </ul>
                         <form className="navbar-form navbar-left" action="/action_page.php">
