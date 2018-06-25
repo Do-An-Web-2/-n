@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Clock from './clock';
-import Header from './header';
-import Producter from './producter';
-import Footer from './footer';
 class Home extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      producter: [],
-      ten_hienthi: "",
       sp_luot: [],
       sp_gia:[],
       sp_thoigian:[],
-      nguoidung: 0,
       seconds: 0,
       user_id:0,
     };
@@ -30,13 +24,11 @@ class Home extends Component {
                 sp_luot: res.data.sp_luot,
                 sp_gia:res.data.sp_gia,
                 sp_thoigian:res.data.sp_thoigian, 
-                producter: res.data.loaisp,
-                user_id:res.data.user_id,
-                ten_hienthi:res.data.taikhoan })
+                user_id:res.data.user_id, })
             })
      }
-  componentDidMount() {
-      this.interval = setInterval(() => this.tick(),10);
+  componentWillMount() {
+      this.interval = setInterval(() => this.tick(),1000);
     }
   render() {
     var elements_luot = this.state.sp_luot.map((sp, index) => {
@@ -46,7 +38,7 @@ class Home extends Component {
         </div>
         <div className="caption">
           <p><span className="thoigian"><Clock deadLine={sp.thoigiandau} masp={sp.mssp} /></span>
-            <span className="giatien">{sp.gia_hientai}K</span>
+            <span className="giatien">{sp.gia_thapnhat}K</span>
           </p>
           <p>
             <a href={"/Detail/phien=" + sp.ms_phien + "/id=" + sp.mssp} className="btn" role="button">Đấu giá ngay</a>
@@ -62,7 +54,7 @@ class Home extends Component {
         </div>
         <div className="caption">
           <p><span className="thoigian"><Clock deadLine={sp.thoigiandau} masp={sp.mssp} /></span>
-            <span className="giatien">{sp.gia_hientai}K</span>
+            <span className="giatien">{sp.gia_thapnhat}K</span>
           </p>
           <p>
             <a href={"/Detail/phien=" + sp.ms_phien + "/id=" + sp.mssp} className="btn" role="button">Đấu giá ngay</a>
@@ -78,7 +70,7 @@ class Home extends Component {
         </div>
         <div className="caption">
           <p><span className="thoigian"><Clock deadLine={sp.thoigiandau} masp={sp.mssp} /></span>
-            <span className="giatien">{sp.gia_hientai}K</span>
+            <span className="giatien">{sp.gia_thapnhat}K</span>
           </p>
           <p>
             <a href={"/Detail/phien=" + sp.ms_phien + "/id=" + sp.mssp} className="btn" role="button">Đấu giá ngay</a>
@@ -90,13 +82,6 @@ class Home extends Component {
 
       <div >
         <div>
-          {/* Header */}
-           <Header ten_hienthi={this.state.ten_hienthi} nguoidung={this.state.nguoidung} user_id={this.state.user_id} />
-          {/* end Header*/}
-          <div className="row producter_index">
-            {/* producter */}
-            <Producter loaisp={this.state.producter} />
-            {/* end producter */}
             {/* noi dung */}
             <div className="col-md-9" id="content">
               <div className="panel panel-default">
@@ -121,11 +106,11 @@ class Home extends Component {
                   </div>
                 </div>
               </div>
-            </div>
+            {/* </div> */}
             {/* end noi dung */}
           </div>
           {/* footer */}
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
     );
