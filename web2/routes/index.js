@@ -3,10 +3,11 @@ var router = express.Router();
 var router = express.Router();
 var Pool = require('pg-pool');
 var pg = require("pg");
-var fs = require("fs-extra");
+var fs = require("fs");
 var md5=require("md5");
 var bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
+var numeral = require('numeral');
 
 var config = {
     user: 'postgres',
@@ -117,11 +118,16 @@ router.get('/serverProduct/:ID', (req, res, next) => {
 router.get('/serverDetail/phien=:PHIEN/id=:ID', (req, res, next) => {
     var id = req.params.ID;
     var phien = req.params.PHIEN;
+    var user_id=0;
+    if(req.session.user)
+    {
+    user_id=req.session.user;
+    }
     pool.connect(function (err, client, done) {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        client.query("select * from phiendaugia phien join sanpham sp on sp.mssp=phien.mssp join loai_sanpham l on l.mlsp=sp.ma_loai where sp.mssp=" + id + ";select * from hinh where mssp=" + id + ";select max(gia_hientai) from phiendaugia where ms_phien=" + phien + ";select tk.ten_hienthi from phiendaugia phien join phieu_daugia phieu on phien.ms_phien=phieu.ms_phien join taikhoan tk on tk.id=phieu.mstk where phieu.ms_phieu=phien.phieudauthang and phien.ms_phien=" + phien + ";", function (err, result) {
+        client.query("select * from phiendaugia phien join sanpham sp on sp.mssp=phien.mssp join loai_sanpham l on l.mlsp=sp.ma_loai where sp.mssp=" + id + ";select * from hinh where mssp=" + id + ";select max(gia_hientai) from phiendaugia where ms_phien=" + phien + ";select tk.ten_hienthi from phiendaugia phien join phieu_daugia phieu on phien.ms_phien=phieu.ms_phien join taikhoan tk on tk.id=phieu.mstk where phieu.ms_phieu=phien.phieudauthang and phien.ms_phien=" + phien + ";Select*from phiendaugia phien join phieu_daugia phieu on phien.phieudauthang=phieu.ms_phieu where phien.thoigiandau<now() and phieu.mstk="+user_id+" and phien.ms_phien="+phien+";", function (err, result) {
             done();
             if (err) {
                 return console.error('error running query', err);
@@ -129,11 +135,11 @@ router.get('/serverDetail/phien=:PHIEN/id=:ID', (req, res, next) => {
             }
             if(req.session.user)
             {
-            res.json({ sanpham: result[0].rows, hinh: result[1].rows, giadau: result[2].rows, userWin: result[3].rows,user_id:req.session.user});
+            res.json({ sanpham: result[0].rows, hinh: result[1].rows, giadau: result[2].rows, userWin: result[3].rows,user_id:req.session.user,ketqua:result[4].rowCount});
             }
             if(!req.session.user)
             {
-            res.json({ sanpham: result[0].rows, hinh: result[1].rows, giadau: result[2].rows, userWin: result[3].rows,user_id:0});
+            res.json({ sanpham: result[0].rows, hinh: result[1].rows, giadau: result[2].rows, userWin: result[3].rows,user_id:0,ketqua:result[4].rowCount});
             }
         });
     });
@@ -229,28 +235,52 @@ router.get('/Detail/checkUserInPhien/phien=:PHIEN/id=:ID', (req, res) => {
             if (err) {
                 return console.error('error fetching client from pool', err);
             }
-            client.query('select * from phiendaugia p join phieu_daugia b on p.ms_phien=b.ms_phien where p.ms_phien=' + phien + 'and b.mstk=' + id + ';', function (err, result) {
+            client.query('select * from phiendaugia p  where localtimestamp>=p.thoigian_bd and p.thoigiandau>=now() and p.ms_phien=' + phien + ';select * from phiendaugia p join phieu_daugia b on p.ms_phien=b.ms_phien where p.ms_phien=' + phien + 'and b.mstk=' + id + ';', function (err, result) {
                 done();
                 if (err) {
                     return console.error('error running query', err);
                     res.end();
                 }
-                if (result.rowCount != 0) {
-                    if (result.rows[0].tinhtrang === true) {
-                        if (result.rows[0].ms_tinhtrang == 2) {
+                if(result[0].rowCount!=0)//Con thoi gian dau
+                {
+                    if(result[1].rowCount==0)//insert phieu dau
+                    {
+                        return res.json(0);
+                    }
+                    if(result[1].rowCount!=0)
+                    {
+                        if(result[1].rows[0].ms_tinhtrang==2)
+                        {
                             return res.json(1);
                         }
-                        if (result.rows[0].ms_tinhtrang == 1) {
+                        if(result[1].rows[0].ms_tinhtrang==1)
+                        {
                             return res.json(-1);
                         }
                     }
-                    if (result.rows[0].tinhtrang === false) {
-                        res.json(2);
-                    }
                 }
-                if (result.rowCount == 0) {
-                    return res.json(0);
+                if(result[0].rowCount==0)//Het thoi gian dau
+                {
+                    return res.json(2);
                 }
+                // if (result.rowCount != 0) {
+                //     // if (result.rows[0].tinhtrang === true) {
+                //     //     if (result.rows[0].ms_tinhtrang == 2) {
+                //     //         return res.json(1);
+                //     //     }
+                //     //     if (result.rows[0].ms_tinhtrang == 1) {
+                //     //         return res.json(-1);
+                //     //     }
+                //     // }
+                //     // if (result.rows[0].tinhtrang === false) {
+                //     //    return res.json(2);
+                //     // }
+                //     console.log(result.rows[0].phieudauthang+id+phien)
+                // }
+                // // Het thoi gian la 2
+                // if (result.rowCount == 0) {
+                //     return res.json(0);
+                // }
             });
         });
     }
@@ -350,21 +380,23 @@ router.post('/Quanly/Image', (req, res) => {
     });
 });
 
-router.get('/serverQuanly/info', (req, res) => {
-
+router.post('/serverQuanly/Themsanpham/updateHinh', (req, res) => {
+    var ms_hinh=req.body.mahinh;
+    var mssp=req.body.mssp;
     pool.connect(function (err, client, done) {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        client.query('select max(ms_hinh)+1 as max from hinh', function (err, result) {
+        client.query('Update sanpham set hinhanh=$1 where mssp=$2 ',[ms_hinh,mssp], function (err, result) {
             done();
             if (err) {
                 return console.error('error running query', err);
                 res.end();
             }
-            res.json(result.rows[0].max);
+            res.json(1);
     });
 });
+
 });
 
 router.get('/serverQuanly/info/mssp', (req, res) => {
@@ -392,12 +424,11 @@ router.post('/serverQuanly/Themsanpham', (req, res) => {
     var img3=req.body.img3;
     var img4=req.body.img4;
     var mlsp=req.body.mlsp;
-    var max_hinh_sql=req.body.max_hinh_sql;
     pool.connect(function (err, client, done) {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        client.query('insert into sanpham(ma_loai,ten_sp,dacta,gia,hinhanh) values($1,$2,$3,$4,$5);',[mlsp,tensanpham,mota,gia,max_hinh_sql], function (err, result) {
+        client.query('insert into sanpham(ma_loai,ten_sp,dacta,gia) values($1,$2,$3,$4);',[mlsp,tensanpham,mota,gia], function (err, result) {
             done();
             if (err) {
                 return console.error('error running query', err);
@@ -432,24 +463,23 @@ router.post('/serverQuanly/Themsanpham/Folder', (req, res) => {
     var img2=req.body.img2;
     var img3=req.body.img3;
     var img4=req.body.img4;
-    var address_new = "E:/Web/web2/public/client/public/images/sanpham/";
-    var address = "E:/Web/web2/public/client/public";
+    var address_new = "E:/Web/web2/client/public/images/sanpham/";
+    var address = "E:/Web/web2/client/public";
     pool.connect(function (err, client, done) {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        client.query('select * from hinh where mssp='+mssp, function (err, result) {
+        client.query('select * from hinh where mssp='+mssp+';select min(ms_hinh) from hinh where mssp='+mssp+';', function (err, result) {
             done();
             if (err) {
                 return console.error('error running query', err);
                 res.end();
             }
-            console.log(result.rows.ms_hinh+ result.rows[0].ms_hinh+result.rows[1].ms_hinh);
-            fs.copyFileSync(address+img1,address_new +result.rows[0].ms_hinh+ ".jpg");
-            fs.copyFileSync(address+img2,address_new +result.rows[1].ms_hinh+ ".jpg");
-            fs.copyFileSync(address+img3,address_new +result.rows[2].ms_hinh+ ".jpg");
-            fs.copyFileSync(address+img4,address_new +result.rows[3].ms_hinh+ ".jpg");
-            res.end();
+            fs.renameSync(address+img1,address_new +result[0].rows[0].ms_hinh+ ".jpg");
+            fs.renameSync(address+img2,address_new +result[0].rows[1].ms_hinh+ ".jpg");
+            fs.renameSync(address+img3,address_new +result[0].rows[2].ms_hinh+ ".jpg");
+            fs.renameSync(address+img4,address_new +result[0].rows[3].ms_hinh+ ".jpg");
+            res.json(result[1].rows[0].min);
     });
 });
 });
@@ -465,7 +495,7 @@ router.post('/serverQuanly/Duyet', (req, res) => {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        client.query('insert into phiendaugia(mssp,thoigian_bd,thoigiandau,gia_thapnhat) values($1,$2,$3,$4);',[mssp,thoigian_bd,thoigian_kt,gia], function (err, result) {
+        client.query('insert into phiendaugia(mssp,thoigian_bd,thoigiandau,gia_thapnhat,gia_hientai) values($1,$2,$3,$4,$5);',[mssp,thoigian_bd,thoigian_kt,gia,gia], function (err, result) {
             done();
             if (err) {
                 return console.error('error running query', err);
@@ -510,7 +540,31 @@ router.get('/serverGiohang', (req, res) => {
                 {
                     tongtien+=result.rows[i].gia_hientai*1000;
                 }
+                tongtien=numeral(tongtien).format('0,0');
                 res.json({giohang:result.rows,tongtien:tongtien,user_id:req.session.user});
+            });
+        });
+    }
+    if(!req.session.user)
+    {
+        return res.json({user_id:0})
+    }
+});
+
+router.get('/serverGiohang/Thanhtoan/:phien', (req, res) => {
+    var phien=req.params.phien;
+    if (req.session.user) {
+        pool.connect(function (err, client, done) {
+            if (err) {
+                return console.error('error fetching client from pool', err);
+            }
+            client.query('Update phiendaugia set tinhtrang_phien=2 where ms_phien='+phien+';', function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                    res.end();
+                }
+                res.end();
             });
         });
     }

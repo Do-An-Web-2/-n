@@ -1,0 +1,897 @@
+body
+{
+	font-family:'Myriad Pro Semibold' !important; 
+}
+#content .row
+{
+	margin-left: -5px;
+}
+.producter_index
+{
+	margin-top: 10px;
+}
+.daugia_panle
+{
+	background-color: #62177E !important; 
+	color: white !important;
+	font-weight: bold;
+}
+.item img 
+{
+height: 400px !important;
+width: 1340px;
+}
+.navbar-brand .w3-jumbo {
+    font-size: 30px!important;
+}
+
+.navbar-brand .w3-tag {
+     display: unset; 
+}
+
+#footer
+{
+	background-color: #222222 ; 
+	height: 300px; 
+	color: white;
+	font-size: 10pt;
+}
+
+.sanpham
+{
+	border: #EEEEEE solid 2px;
+	margin-left: 10px;
+	margin-top: 10px;
+	height: 230px;
+	width: 180px;
+}
+.sanpham img
+{
+	width: 110px;
+	height:120px;
+}
+.thumbnail
+{
+	border: none;
+}
+/*o san pham*/
+/*button dau gia*/
+
+.caption a
+{
+	display: block;
+	border: #3298FE solid 1px;
+	color: #3298FE;
+}
+.caption a:hover
+{
+	background-color: #3298FE;
+	color: white;
+}
+.giatien
+{
+	margin-left:40px;
+	color: #222222;
+	font-weight: bold;
+    float: right;
+}
+.thoigian
+{
+	color: #F44336;
+    font-weight: bold;
+}
+/*end o san pham*/
+/*footer*/
+.footer_1 .w3-jumbo 
+{
+    font-size: 20px !important;
+}
+#noidung_footer
+{
+	margin-top:40px;
+}
+#noidung_footer ul li a
+{
+	text-decoration: none;
+}
+.footer_1
+{
+	margin-left:-20px;
+}
+.theloai ul
+{
+	list-style-type: none;
+}
+.theloai img
+{
+	width: 50px;
+	height: 50px;
+	margin-left: 16px;
+}
+.theloai div
+{
+	float: left;
+}
+.logo
+{
+	 margin-top: 50px
+}
+.footer_2
+{
+	height: 50px; 
+	line-height: 50px;
+	background-color: #E4E4E4;
+	font-size: 9pt;
+}
+.footer_2 #footer_d1
+{
+	float: left;
+}
+.footer_2 #footer_d1 a
+{
+	color: #23527C;
+	text-decoration: underline;
+}
+.footer_2 #footer_d2
+{
+	float: right;
+}
+/*end footer*/
+/*producter*/
+
+/*end producter*/
+/*detail*/
+* {
+  box-sizing: border-box;
+}
+
+img {
+  vertical-align: middle;
+}
+
+/* Position the image container (needed to position the left and right arrows) */
+
+
+/* Position the image container (needed to position the left and right arrows) */
+ .image_detail{
+  position: relative;
+  width: 400px;
+}
+
+/* Hide the images by default */
+
+/*.image_detail .mySlides img 
+{
+  display: unset;
+  width: 300px !important;
+  height:350px !important;
+}*/
+/* Add a pointer when hovering over the thumbnail images */
+.cursor {
+  cursor: pointer;
+}
+
+/* Next & previous buttons */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 40%;
+  width: auto;
+  padding: 16px;
+  margin-top: -50px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* Container for image text */
+.caption-container {
+  text-align: center;
+  background-color: #222;
+  padding: 2px 16px;
+  color: white;
+}
+.image_detail .row
+{
+	margin-left:-1px!important;
+	margin-top: 2px;
+}
+.image_detail .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Six columns side by side */
+.column {
+  float: left;
+  margin-left: 5px;
+  border: #D0D0D0 solid 2px;
+}
+.column img
+{
+	width: 90px;
+	height: 100px;
+}
+/* Add a transparency effect for thumnbail images */
+.demo {
+  opacity: 0.6;
+}
+
+.active,
+.demo:hover {
+  opacity: 1;
+}
+.info_detail
+{
+	float: right;
+	margin-top: -600px;
+	margin-right:300px;
+}
+.info_right
+{
+    float: right;
+    margin-right: -250px;
+    margin-top: -248px;
+    width: 180px;
+    height: 250px;
+}
+.chinhsach
+{
+	margin-left: 570px;
+	margin-top: 10px;
+}
+.chinhsach a
+{
+	text-decoration: none;
+}
+.chinhsach1
+{
+	margin-left: 10px;
+	color: #33CCFF;
+}
+#chitiet,#FAQ
+{
+	font-family:"Myriad Pro Condensed"!important;
+	font-weight: normal !important;
+	font-size:14pt;
+}
+.info_left 
+{
+width:208px;
+height: 250px;
+}
+.info_left .btn_daugia
+{
+	margin-top: 10px;
+	width: 207px;
+	height: 40px;
+	background: #3298FE;
+	color: white;
+	border: none;
+	border-radius: 5px;
+}
+.info_left .btn_daugia:hover
+{
+	font-size: 13pt
+}
+.giahientai
+{
+	font-style: inherit;
+	font-size: 20pt;
+	color: #000000;
+}
+.tienhientai
+{
+	font-family:'Myriad Pro Bold';
+	font-weight:normal;
+	font-size:42px;
+	font-size: 23pt;
+}
+.daugiangay
+{
+	font-size: 13pt;
+	color: #6D6E6A;
+}
+.thoigiandau
+{
+
+	font-style: inherit;
+	font-size: 20pt;
+	color: #000000;
+}
+.time_dau
+{
+	font-family:'Myriad Pro Bold';
+	color: #F44336;
+	font-size: 23pt;
+}
+/*nut ang giam gia tien*/
+.center{
+width: 150px;
+  margin: 40px auto;
+  
+}
+.btn_tanggiam
+{
+	width: 207px;
+}
+.nguoithang
+{
+	margin-top: 10px;
+	
+}
+.user_thang
+{
+	font-family: "Abel-Regular";
+	font-style: italic;
+}
+/*end detail*/
+.panel-body
+{margin-left: -5px;}
+/* dangnhap */
+ .login {
+    height:-webkit-fill-available;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+}
+
+.login .card-container.card {
+    max-width: 350px;
+    padding: 40px 40px;
+}
+
+.login .btn {
+    font-weight: 700;
+    height: 36px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+/*
+ * Card component
+ */
+ .login .card {
+    background-color: #F7F7F7;
+    /* just in case there no content*/
+    padding: 20px 25px 30px;
+    margin: 0 auto 25px;
+    margin-top: 50px;
+    /* shadows and rounded borders */
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+/*
+ * Form styles
+ */
+ .profile-name-card {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0 0;
+    min-height: 1em;
+}
+
+.reauth-email {
+    display: block;
+    color: #404040;
+    line-height: 2;
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.form-signin #inputEmail,
+.form-signin #inputPassword {
+    direction: ltr;
+    height: 44px;
+    font-size: 16px;
+}
+
+.form-signin input[type=email],
+.form-signin input[type=password],
+.form-signin input[type=text],
+.form-signin button {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+    z-index: 1;
+    position: relative;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.form-signin .form-control:focus {
+    border-color: rgb(104, 145, 162);
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(104, 145, 162);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(104, 145, 162);
+}
+.input_nhap{
+    height: 30px!important;
+}
+.btn.btn-signin {
+    /*background-color: #4d90fe; */
+    background-color: rgb(104, 145, 162);
+    /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
+    padding: 0px;
+    font-weight: 700;
+    font-size: 14px;
+    height: 36px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: none;
+    -o-transition: all 0.218s;
+    -moz-transition: all 0.218s;
+    -webkit-transition: all 0.218s;
+    transition: all 0.218s;
+}
+
+ .btn.btn-signin:hover,
+.btn.btn-signin:active,
+.btn.btn-signin:focus {
+    background-color: rgb(12, 97, 33);
+}
+
+ .forgot-password {
+    color: rgb(104, 145, 162);
+}
+
+.forgot-password:hover,
+.forgot-password:active,
+.forgot-password:focus{
+    color: rgb(12, 97, 33);
+}
+/* end dangnhap */
+.imagesProduct
+{
+    display: block; margin-left: auto; margin-right: auto;
+    width: 368px;
+    height: 480px;
+}
+.f_tiendau
+{
+    text-align: center;
+}
+.dathang
+{    float: left;
+    position: sticky;
+    left: 768px;
+    bottom: 607px;
+    width: 200px;
+    margin-top: 140px;
+}
+.daucaonhat
+{
+    text-overflow: inherit;
+    float: left;
+    position: sticky;
+    left: 768px;
+    bottom: 607px;
+    width: 200px;
+    margin-top: 118px;
+}
+.f_alertEnd 
+{
+    width: 490px;
+    float: right;
+    margin-top: -345px;
+    text-align: center;
+    margin-right: 17px;
+}
+
+/* Đấu giá của tôi */
+.daugiacuatui_btn ,.btn-default
+{
+	border-radius: 0px;
+}
+
+.daugiacuatui_table
+{
+	width: 800px;
+	font-family: sans-serif;
+}
+.daugiacuatui_table th
+{
+	height: 50px;
+	text-align: center;
+	line-height: 50px!important;
+	background-color: #EEEEEE;
+    border: #CCCCCC solid 1px!important;}
+.daugiacuatui_table tbody
+{
+	border: #CCCCCC solid 1px;
+	text-align: center;
+}
+.daugiacuatui_table td
+{
+	text-align: center;
+}
+.daugiacuatui_table img
+{
+	width: 32px!important;
+}
+
+/*dathang*/
+.daugiadathang_table 
+{
+	width: 800px;
+	font-family: sans-serif;
+}
+.daugiadathang_table th
+{
+	height: 50px;
+	text-align: center;
+	line-height: 50px!important;
+	background-color: #EEEEEE;
+	border: #CCCCCC solid 1px!important;
+}
+.daugiadathang_table tbody
+{
+	border: #CCCCCC solid 1px;
+	text-align: center;
+}
+.daugiadathang_table td
+{
+	text-align: center;
+}
+.daugiadathang_table img
+{
+	width: 32px!important;
+}
+/*end dathang*/
+
+/*thua*/
+.daugiathua_table  
+{
+	width: 800px;
+	font-family: sans-serif;
+}
+.daugiathua_table th
+{
+	height: 50px;
+	text-align: center;
+	line-height: 50px!important;
+	background-color: #EEEEEE;
+    border: #CCCCCC solid 1px!important;}
+.daugiathua_table tbody
+{
+	border: #CCCCCC solid 1px;
+	text-align: center;
+}
+.daugiathua_table td
+{
+	text-align: center;
+}
+.daugiathua_table img
+{
+	width: 32px!important;
+}
+#btn_hientai
+{
+    width: 200px;
+    color: #5AD4F4;
+}
+#btn_dathang
+{
+    width: 200px;
+    color: #5AD4F4;
+}
+#btn_dathua
+{
+    width: 200px;
+    color: #5AD4F4;
+}
+.index_daugiacuatoi
+{
+    margin-left: 34px;
+    margin-top: 22px;
+    font-family: sans-serif;
+}
+#btn_submit
+{
+    width: 40px;
+    border-radius: 5px;
+    margin-left: 2px;
+    font-weight: bold;
+    color: #62177E;
+}
+/*end thua*/
+/* end Đấu giá của tôi */
+
+/*quản lý sản phẩm*/
+.qlsp_header
+{
+	height:100px;
+	background: #DEE7EF;
+}
+.qlsp_btn
+{
+    border-radius: 5px;
+    width: 180px;
+    margin: 10px;
+}
+.qlsp_nutbam
+{
+	position: absolute;
+    left: 524px;
+    top: 10px;
+}
+.qlsp_anhIndex
+{
+	width: 32px;
+	height: 32px;
+}
+.qlsp_table_header
+{
+	height: 50px;
+	background: #A5D273
+}
+.qlsp_table_noidung
+{
+	text-align: center;
+}
+.qlsp_image1
+{
+	height: 300px;
+	width: 300px;
+	border: black solid 1px;
+}
+.qlsp_left
+{
+	float: left;
+	width: 400px
+}
+.qlsp_imageChild
+{
+	float: left;
+	margin-left: -40px;
+	list-style-type: none;
+}
+.qlsp_imageChild ul
+{
+	list-style-type: none;
+}
+.imageChild
+{
+	height: 100px;
+	width: 100px;
+	border: black solid 1px;
+}
+.mota
+{
+	width:300px
+}
+.danhmuc
+{
+	width: 150px
+}
+.select_danhmuc
+{
+	float: right;
+    margin-right: 20px;
+}
+.qlsp_btn_plus
+{
+    margin-left: -401px!important;
+}
+.qlsp_tiendau{
+    width: 80px!important;
+    text-align: center;
+}
+#img_add_1
+{
+    width: 300px;
+    height: 300px;
+    display: block; margin-left: auto; margin-right: auto;
+}
+#img_add_2
+{
+    width: 100px;
+    height: 100px;
+    display: block; margin-left: auto; margin-right: auto;
+}
+#img_add_3
+{
+    width: 100px;
+    height: 100px;
+    display: block; margin-left: auto; margin-right: auto;
+}
+#img_add_4
+{
+    width: 100px;
+    height: 100px;
+    display: block; margin-left: auto; margin-right: auto;
+}
+
+/*end qlsp*/
+
+/*giỏ hàng*/
+.cart_table
+{
+	border:#DDDDDD solid 1px;
+	font-family: sans-serif;
+}
+.cart_table th
+{
+	background: #E4E4E4;
+}
+.cart_tungsp
+{
+	float: right;
+	color: #1AB7EA;
+}
+.cart_giaohang img
+{
+	height: 72px;
+	width: 72px;
+}
+.cart_thanhtoan {
+    float: right;
+    margin-top: 10px;
+    height: 45px;
+    font-weight: bold;
+}
+
+.cart_dieukhoan ul
+{
+	margin-top:30px;
+	float: left;
+}
+.cart_dieukhoan li
+{
+	list-style-type: none;
+	font-family: sans-serif;
+	
+}
+.cart_chitiet img
+{
+height: 50px;width: 50px;
+}
+.cart_chitiet span
+{
+	float: right; 
+	margin-top: 15px;
+}
+.Giohang_khongsp
+{
+    font-family: sans-serif;
+}
+.removeProduct
+{
+    background:#EEEEEE;
+    height: 160px;
+    width: 568px;
+    line-height: 25px;
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    padding:0 auto;
+}
+.removeProduct_close
+{
+    margin-top: -22px;
+    margin-bottom: 6px;
+}
+.removeProduct_btn
+{
+    background: #9F187F;
+    margin-left: 5px;
+    color: white;
+    font-weight: bold;
+}
+/*end giỏ hàng*/
+.top5
+{
+    height: 280px;
+    width: 970px;
+}
+.daugia_top
+{
+color:#62177E;
+font-size: 14pt;
+font-weight: bold;
+}
+
+.loginFrm{ margin-bottom:8px;}
+.loginFrm .control-group{padding:8px 14px 0; margin-bottom:0 }
+
+.TK_dangky
+{
+    float: left!important;
+    font-family: sans-serif;
+    font-size: 8pt;
+    color: #3298FE;
+}
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background: #11B753;
+    color: white;
+}
+.modal-open
+{
+  padding-right:0px!important;
+}
+.btn_Login
+{
+    float: right;
+}
+.btn_Register_Submit
+{
+    margin-left: 191px;
+}
+
+/*Thong tin*/
+.btn_thaydoi
+{
+    float: right;
+    margin-right: -65px;
+    margin-top: -34px;
+}
+.btnTT_save
+{
+    margin-bottom: 10px;
+    margin-top: 222px;
+    margin-left: -175px;
+    height: 40px;
+}
+.panel_thongtin
+{
+    height: 387px;
+}
+.thongtin_back
+{
+    margin-top: 10px;
+}
+/*end Thong tin*/
