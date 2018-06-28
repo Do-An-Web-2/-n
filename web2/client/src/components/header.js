@@ -381,7 +381,7 @@ class Header extends Component {
         }
         if (this.state.nguoidung == 1) {
             elementQuanly = (
-                <li><a href="/Quanly"><span class="glyphicon glyphicon-th-list"></span>Quản lý</a></li>
+                <li><a href="/Quanly"><span className="glyphicon glyphicon-th-list"></span>Quản lý</a></li>
             )
         }
         return (

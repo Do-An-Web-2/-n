@@ -4,7 +4,6 @@ class Clock extends Component {
   constructor(props) {
     super(props)
     this.state = { hours: "", minutes: "", seconds: "", time: "", status: false,masp:"", timeWait:5000 };
-    console.log(this.props);
   }
   zeroPad(num, places) {
     var zero = places - num.toString().length + 1;

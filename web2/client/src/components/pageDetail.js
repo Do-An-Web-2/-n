@@ -423,7 +423,7 @@ class pageDetail extends Component {
                                 <span className="glyphicon glyphicon-minus" />
                               </button>
                             </span>
-                            <input type="text" name="quant[1]" className="form-control input-number f_tiendau" ref="giadau" min={this.state.giadau_min} max={100} />
+                            <input type="text" name="quant[1]" className="form-control input-number f_tiendau" ref="giadau" min={this.state.giadau_min} max={100000000000000} />
                             <span className="input-group-btn">
                               <button type="button" className="btn btn-default btn-number" data-type="plus" data-field="quant[1]">
                                 <span className="glyphicon glyphicon-plus" />

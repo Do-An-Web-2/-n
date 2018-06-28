@@ -5,23 +5,12 @@ import { stringify } from 'querystring'
 import monent from 'moment';
 class pageQuanly extends Component {
     constructor(props) {
-        function zeroPad(num, places) {
-            var zero = places - num.toString().length + 1;
-            return Array(+(zero > 0 && zero)).join("0") + num;
-        }
-        var khoangthoigian = 7;
-        var date = new Date();
-        date.setMonth(date.getMonth() + 1);
-        var thoigian_bd = zeroPad(monent().hours(), 2) + ":" + zeroPad(monent().minutes(), 2);
-        var thoigian_kt = zeroPad(monent().add(khoangthoigian, 'hours').hours(), 2) + ":" + zeroPad(monent().add(khoangthoigian, 'hours').minutes(), 2);
-        var thoigianBD = date.getFullYear() + "-" + zeroPad(date.getMonth(), 2) + "-" + zeroPad(monent().dates(), 2) + 'T' + thoigian_bd;
-        var thoigianKT = monent().add(khoangthoigian,'hours').years() + "-" + zeroPad(monent().add(khoangthoigian,'hours').month()+1, 2) + "-" + zeroPad(monent().add(khoangthoigian,'hours').dates(), 2) + 'T' + thoigian_kt;
-        var thoigian_header = monent().format('MMMM Do YYYY, h:mm:ss a');
         super(props);
         this.Duyet = this.Duyet.bind(this);
         this.Remove = this.Remove.bind(this);
         this.Update = this.Update.bind(this);
         this.UpdateSave = this.UpdateSave.bind(this);
+        this.Xacnhan = this.Xacnhan.bind(this);
         this.state = {
             producter: [],
             ten_hienthi: "",
@@ -31,11 +20,14 @@ class pageQuanly extends Component {
             hinhanh_max: 0,
             insertphien: [],
             mssp_moi: 0,
-            value_datebd: thoigianBD,
-            value_datekt: thoigianKT,
-            thoigian_header: thoigian_header,
+            value_datebd:"",
+            value_datekt:"",
+            thoigian_header:"",
             btn_update: 0,
+            alert_thongso: 0,
+            khoangthoigian:0,
         };
+        
         this.Save = this.Save.bind(this);
 
     }
@@ -118,12 +110,18 @@ class pageQuanly extends Component {
         $("#qlsp_btn_sanpham").click(function (event) {
             $("#qlsp_sanpham").show();
             $("#qlsp_themsp").hide();
+            $("#qlsp_thongso").hide();
         });
         $("#qlsp_btn_themsp").click(function (event) {
             $("#qlsp_sanpham").hide();
+            $("#qlsp_thongso").hide();
             $("#qlsp_themsp").show();
         });
-
+        $("#qlsp_btn_thongso").click(function (event) {
+            $("#qlsp_sanpham").hide();
+            $("#qlsp_themsp").hide();
+            $("#qlsp_thongso").show();
+        });
     }
     scriptAnh() {
         $("#btn_img1").change(function () {
@@ -277,13 +275,13 @@ class pageQuanly extends Component {
     }
     UpdateSave(mssp) {
         this.setState({ btn_update: 0 })
-        var body={
-            mssp:mssp,
-            ten_sp:$('#ql_updateTen').val(),
-            gia_sp:$('#ql_updateGia').val(),
-            mota:$('#ql_updateMota').val()
+        var body = {
+            mssp: mssp,
+            ten_sp: $('#ql_updateTen').val(),
+            gia_sp: $('#ql_updateGia').val(),
+            mota: $('#ql_updateMota').val()
         }
-        axios.put('/serverQuanly/updateProduct',body)
+        axios.put('/serverQuanly/updateProduct', body)
     }
     Duyet(mssp) {
         var thoigian_bd = $('input[date_bd=' + mssp + ']').val();
@@ -312,6 +310,21 @@ class pageQuanly extends Component {
                 return 1;
             })
     }
+
+    Xacnhan() {
+        alert(this.state.khoangthoigian);
+        var body = {
+            ketthucphien: $('#ketthucphien').val(),
+            motphiendau: $('#motphiendau').val(),
+            phantramdau: $('#phantramdau').val()
+        }
+        axios.put('/serverQuanly/UpdateThongso', body)
+            .then((res) => {
+                if (res.data === 1) {
+                    this.setState({ alert_thongso: 1 });
+                }
+            });
+    }
     tick() {
         this.setState(prevState => ({
             seconds: prevState.seconds + 1
@@ -328,32 +341,57 @@ class pageQuanly extends Component {
                     this.setState({ nguoidung: res.data.nguoidung });
                     axios.get('/serverQuanly')
                         .then(res => {
-                            this.setState({ producter: res.data.loaisp, insertphien: res.data.phien })
+                            this.setState({ producter: res.data.loaisp, insertphien: res.data.phien,khoangthoigian:res.data.thongso[1].giatri })
+                            $('#motphiendau option[value=' + res.data.thongso[1].giatri + '] ').attr('selected', 'selected');
+                            $('#ketthucphien option[value=' + res.data.thongso[0].giatri + '] ').attr('selected', 'selected');
+                            $('#phantramdau option[value=' + res.data.thongso[2].giatri + ']').attr('selected', 'selected');
                         })
                 }
                 this.setState({ thoigian_header: monent().format('MMMM Do YYYY, h:mm:ss a') });
-                if ($('.thoigianBD').val() === "") {
-                    $('.thoigianBD').val(this.state.value_datebd);
-                    $('.thoigianKT').val(this.state.value_datekt);
-                }
             })
             .catch(err => console.log("Error"));
+    }
+    AlertThonso(){
+        if(this.state.alert_thongso===1)
+        {
+            this.setState({alert_thongso:0})
+        }
     }
     componentDidMount() {
         this.scriptAnh();
         this.scriptHieuungBtn();
+        setInterval(()=>this.AlertThonso(),5000);
         this.interval = setInterval(() => this.tick(), 1000);
-        this.scriptTangGiam();
+        this.scriptTangGiam(); 
 
+        function zeroPad(num, places) {
+            var zero = places - num.toString().length + 1;
+            return Array(+(zero > 0 && zero)).join("0") + num;
+        } 
+        var khoangthoigian = 7;
+        var date = new Date();
+        date.setMonth(date.getMonth() + 1);
+        var thoigian_bd = zeroPad(monent().hours(), 2) + ":" + zeroPad(monent().minutes(), 2);
+        var thoigian_kt = zeroPad(monent().add(khoangthoigian, 'hours').hours(), 2) + ":" + zeroPad(monent().add(khoangthoigian, 'hours').minutes(), 2);
+        var thoigianBD = date.getFullYear() + "-" + zeroPad(date.getMonth(), 2) + "-" + zeroPad(monent().dates(), 2) + 'T' + thoigian_bd;
+        var thoigianKT = monent().add(khoangthoigian, 'hours').years() + "-" + zeroPad(monent().add(khoangthoigian, 'hours').month() + 1, 2) + "-" + zeroPad(monent().add(khoangthoigian, 'hours').dates(), 2) + 'T' + thoigian_kt;
+        var thoigian_header = monent().format('MMMM Do YYYY, h:mm:ss a');
+        this.setState({value_datebd:thoigianBD,value_datekt:thoigianKT,thoigian_header:thoigian_header});
     }
-
     render() {
-
+        let elementThongso;
+        if (this.state.alert_thongso === 1) {
+            elementThongso = (
+                <div class="alert alert-success">
+                    <strong>Success!</strong>Chúc mừng bạn update thành công.
+                </div>
+            )
+        }
         var elementSelect = this.state.producter.map((sp, index) => {
-            return <option key={index} name={sp.mlsp} class="luachon">{sp.ten_loai} </option>
+            return <option key={index} name={sp.mlsp} className="luachon">{sp.ten_loai} </option>
         })
         var elementPhien = this.state.insertphien.map((sp, index) => {
-            return <tr className="qlsp_table_noidung">
+            return <tr className="qlsp_table_noidung" key={index}>
                 <td>{index}</td>
                 <td><img className="qlsp_anhIndex" src={"/images/sanpham/" + sp.hinhanh + ".jpg"} /></td>
                 {/* ten sp */}
@@ -366,20 +404,20 @@ class pageQuanly extends Component {
                 }
                 {/* Mô tả */}
                 <td><a data-toggle="modal" data-target="#modalMota">Link</a></td>
-                <div class="modal fade" id="modalMota" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Mô tả</h4>
+                <div className="modal fade" id="modalMota" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                <h4 className="modal-title">Mô tả</h4>
                             </div>
-                            <div class="modal-body">
-                            {this.state.btn_update==0? <textarea className="form-control" rows={5} value={sp.dacta} />:
-                             <textarea className="form-control" rows={5} id="ql_updateMota" defaultValue={sp.dacta}/>
-                            }
+                            <div className="modal-body">
+                                {this.state.btn_update == 0 ? <textarea className="form-control" rows={5} value={sp.dacta} /> :
+                                    <textarea className="form-control" rows={5} id="ql_updateMota" defaultValue={sp.dacta} />
+                                }
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Ok</button>
                             </div>
                         </div>
 
@@ -387,15 +425,15 @@ class pageQuanly extends Component {
                 </div>
                 {/* end mo ta */}
                 <td>{sp.ten_loai}</td>
-                <td><input type="datetime-local" date_bd={sp.mssp} className="thoigianBD" />
+                <td><input type="datetime-local" date_bd={sp.mssp} defaultValue={this.state.value_datebd} className="thoigianBD" />
                 </td>
-                <td><input type="datetime-local" date_kt={sp.mssp} className="thoigianKT" />
+                <td><input type="datetime-local" date_kt={sp.mssp} defaultValue={this.state.value_datekt} className="thoigianKT" />
                 </td>
                 {/* Duyệt */}
-                {this.state.btn_update==0?<td><button className="text-success" onClick={() => { this.Duyet(sp.mssp) }}>Duyệt</button></td>:
-                <td><button className="text-danger" disabled onClick={() => { this.Duyet(sp.mssp) }}>Duyệt</button></td>
+                {this.state.btn_update == 0 ? <td><button className="text-success" onClick={() => { this.Duyet(sp.mssp) }}>Duyệt</button></td> :
+                    <td><button className="text-danger" disabled onClick={() => { this.Duyet(sp.mssp) }}>Duyệt</button></td>
                 }
-                
+
                 <td>
                     {this.state.btn_update == 0 ? <a onClick={() => { this.Update(sp.mssp) }}><span className="glyphicon glyphicon-edit text-info" /></a> :
                         <a onClick={() => { this.UpdateSave(sp.mssp) }}><span className="glyphicon glyphicon-save text-info" /></a>
@@ -422,11 +460,49 @@ class pageQuanly extends Component {
                                             <p style={{ fontSize: '8pt' }}>Luôn đồng hành với người dùng</p>
                                         </a>
                                         <div className="qlsp_nutbam">
-                                            <p style={{ marginLeft: 200 }}>{this.state.thoigian_header}</p>
+                                            <p style={{ marginLeft: 410 }}>{this.state.thoigian_header}</p>
+                                            <button className="qlsp_btn btn btn-success" id="qlsp_btn_thongso"><span className="glyphicon glyphicon-cd" />Thông số</button>
                                             <button className="qlsp_btn btn btn-info" id="qlsp_btn_sanpham"><span className="glyphicon glyphicon-qrcode" /> Sản phẩm</button>
                                             <button className="qlsp_btn btn btn-warning" id="qlsp_btn_themsp"><span className="glyphicon glyphicon-plus" />Thêm sản phẩm mới</button>
                                         </div>
                                     </div>
+                                    {/* Quan lý thông số */}
+                                    <div className="qlsp_noidung" id="qlsp_thongso" hidden="true">
+                                    {elementThongso}
+                                        <h3><strong>CÀI ĐẶT THÔNG SỐ</strong></h3>
+                                        <div>
+                                            <h5>1.Thời gian chờ khi kết thúc phiên(Endding)</h5>
+                                            <label >Thời gian (s):</label>
+                                            <select id="ketthucphien" className="form-control">
+                                                <option value='5'>5</option>
+                                                <option value='10'>10</option>
+                                                <option value='15'>15</option>
+                                                <option value='20'>20</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <h5>2.Khoảng thời gian mặc định của một phiên đấu</h5>
+                                            <label >Thời gian (h):</label>
+                                            <select className="form-control" id="motphiendau">
+                                                <option value='3'>3</option>
+                                                <option value='7'>7</option>
+                                                <option value='12'>12</option>
+                                                <option value='24'>24</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <h5>3.Phần trăm giá đấu</h5>
+                                            <label >Phần trăm (%):</label>
+                                            <select className="form-control" id="phantramdau">
+                                                <option value='2'>2</option>
+                                                <option value='4'>4</option>
+                                                <option value='7'>7</option>
+                                                <option value='10'>10</option>
+                                            </select>
+                                        </div>
+                                        <button className="btn btn-danger btn_xacnhan" onClick={() => { this.Xacnhan() }}>Xác nhận</button>
+                                    </div>
+                                    {/* San phẩm */}
                                     <div className="qlsp_noidung" id="qlsp_sanpham" hidden="true">
                                         <table className="table table-striped">
                                             <thead>
@@ -448,6 +524,7 @@ class pageQuanly extends Component {
                                             </tbody>
                                         </table>
                                     </div>
+                                    {/* thêm Sản phầm */}
                                     <div className="qlsp_noidung" id="qlsp_themsp">
                                         <div className="qlsp_left">
                                             <div className="qlsp_image1"><img id="img_add_1" src="" /><span className="alert_error_image1" /></div>
